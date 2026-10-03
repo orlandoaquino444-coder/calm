@@ -1,0 +1,5204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Junta</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,#f7f9fc 0%,#eef2f7 100%);
+  color:#172033;
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   AUTENTICACIÓN
+========================= */
+
+#authScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#0b65d8,#36a3ff);
+}
+
+.authBox{
+  width:100%;
+  max-width:420px;
+  background:white;
+  border-radius:28px;
+  padding:32px;
+  box-shadow:0 25px 70px rgba(0,0,0,.22);
+}
+
+.logo{
+  text-align:center;
+  font-size:48px;
+  font-weight:900;
+  letter-spacing:-2px;
+  color:#0867d8;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#687386;
+  margin-bottom:28px;
+}
+
+.authBox h2{
+  margin-bottom:16px;
+}
+
+.input{
+  width:100%;
+  padding:14px 15px;
+  border:1px solid #d8dee8;
+  border-radius:14px;
+  margin-bottom:12px;
+  outline:none;
+  background:#fff;
+  transition:.2s;
+}
+
+.input:focus{
+  border-color:#1683ff;
+  box-shadow:0 0 0 4px rgba(22,131,255,.10);
+}
+
+.primary{
+  width:100%;
+  background:#0878e8;
+  color:white;
+  padding:14px;
+  border-radius:14px;
+  font-weight:bold;
+  margin-top:4px;
+  transition:.2s;
+}
+
+.primary:hover{
+  background:#0568ca;
+  transform:translateY(-1px);
+}
+
+.secondary{
+  width:100%;
+  background:#edf4fc;
+  color:#0867d8;
+  padding:13px;
+  border-radius:14px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+.linkButton{
+  background:none;
+  color:#0878e8;
+  margin-top:15px;
+  width:100%;
+}
+
+.authMessage{
+  margin-top:12px;
+  padding:10px;
+  border-radius:10px;
+  background:#eef5ff;
+  color:#17558d;
+  font-size:14px;
+  text-align:center;
+}
+
+.error{
+  background:#fff0f0;
+  color:#b42318;
+}
+
+/* =========================
+   APP
+========================= */
+
+#app{
+  min-height:100vh;
+}
+
+.topbar{
+  height:66px;
+  background:rgba(255,255,255,.90);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid #e4e8ef;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 8px 30px rgba(20,35,60,.06);
+}
+
+.topLogo{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-1.5px;
+  background:linear-gradient(90deg,#0867d8,#5b9cff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.topActions{
+  display:flex;
+  gap:8px;
+}
+
+.iconBtn{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#edf4fc;
+  color:#0867d8;
+  font-size:19px;
+  transition:.2s;
+}
+
+.iconBtn:hover{
+  transform:translateY(-2px);
+  background:#dfeeff;
+}
+
+.layout{
+  max-width:1100px;
+  margin:auto;
+  padding:22px 15px 90px;
+}
+
+.nav{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  background:rgba(255,255,255,.95);
+  border:1px solid rgba(20,50,90,.07);
+  border-radius:18px;
+  padding:8px;
+  margin-bottom:20px;
+  box-shadow:0 10px 30px rgba(20,35,60,.07);
+  backdrop-filter:blur(10px);
+}
+
+.nav button{
+  flex:1;
+  max-width:160px;
+  padding:12px;
+  border-radius:12px;
+  background:white;
+  color:#657084;
+  font-weight:bold;
+  transition:.2s;
+}
+
+.nav button:hover{
+  transform:translateY(-1px);
+  background:#f3f7fd;
+}
+
+.nav button.active{
+  background:#e9f3ff;
+  color:#0867d8;
+}
+
+/* =========================
+   PUBLICAR
+========================= */
+
+.createBox{
+  background:white;
+  padding:18px;
+  border-radius:20px;
+  margin-bottom:18px;
+  border:1px solid rgba(20,50,90,.06);
+  box-shadow:0 12px 35px rgba(20,35,60,.07);
+}
+
+.createTop{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.avatar{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#dfeeff;
+  border:2px solid white;
+  box-shadow:0 3px 14px rgba(20,35,60,.13);
+}
+
+.fakeInput{
+  flex:1;
+  background:#f3f6fa;
+  border-radius:25px;
+  padding:14px 18px;
+  color:#7a8597;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.fakeInput:hover{
+  background:#eaf0f7;
+}
+
+.fileRow{
+  margin-top:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.fileButton{
+  background:#eaf4ff;
+  color:#0867d8;
+  padding:10px 14px;
+  border-radius:11px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.fileName{
+  color:#687386;
+  font-size:14px;
+}
+
+.preview{
+  margin-top:12px;
+  max-width:100%;
+  max-height:400px;
+  border-radius:14px;
+  display:block;
+}
+
+/* =========================
+   PUBLICACIONES
+========================= */
+
+.post{
+  background:white;
+  border-radius:20px;
+  margin-bottom:18px;
+  overflow:hidden;
+  border:1px solid rgba(20,50,90,.06);
+  box-shadow:0 12px 35px rgba(20,35,60,.07);
+  transition:.2s;
+}
+
+.post:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 42px rgba(20,35,60,.10);
+}
+
+.postHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px;
+}
+
+.userInfo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.userInfo strong{
+  display:block;
+}
+
+.time{
+  color:#8993a3;
+  font-size:12px;
+  margin-top:2px;
+}
+
+.moreBtn{
+  background:none;
+  font-size:22px;
+  color:#677386;
+}
+
+.postText{
+  padding:0 15px 13px;
+  line-height:1.5;
+  white-space:pre-wrap;
+}
+
+.postMedia{
+  width:100%;
+  max-height:600px;
+  object-fit:cover;
+  display:block;
+  background:#111;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  padding:12px 14px 5px;
+  flex-wrap:wrap;
+}
+
+.actionBtn{
+  background:#f1f5f9;
+  color:#263449;
+  border-radius:11px;
+  padding:9px 12px;
+  transition:.2s;
+}
+
+.actionBtn:hover{
+  background:#e7edf5;
+}
+
+.actionBtn.liked{
+  background:#e8f2ff;
+  color:#0867d8;
+}
+
+.stats{
+  padding:4px 14px 12px;
+  color:#687386;
+  font-size:14px;
+}
+
+/* =========================
+   PERFIL PROPIO
+========================= */
+
+.profileBox{
+  background:white;
+  border-radius:22px;
+  padding:22px;
+  border:1px solid rgba(20,50,90,.06);
+  box-shadow:0 12px 35px rgba(20,35,60,.07);
+}
+
+.profileHead{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.profileAvatar{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#dfeeff;
+  border:4px solid white;
+  box-shadow:0 8px 25px rgba(20,35,60,.15);
+}
+
+.profileInfo h2{
+  margin-bottom:5px;
+}
+
+.bio{
+  color:#697588;
+  margin-top:8px;
+  line-height:1.4;
+}
+
+.profileStats{
+  display:flex;
+  gap:25px;
+  margin-top:15px;
+}
+
+.profileStats div{
+  text-align:center;
+}
+
+.profileStats strong{
+  display:block;
+  font-size:19px;
+}
+
+.profileStats span{
+  color:#788396;
+  font-size:13px;
+}
+
+.editBox{
+  margin-top:22px;
+  border-top:1px solid #e5e9ef;
+  padding-top:20px;
+}
+
+.sectionTitle{
+  margin-bottom:13px;
+}
+
+/* =========================
+   BUSCAR
+========================= */
+
+.searchBox{
+  background:white;
+  padding:16px;
+  border-radius:20px;
+  margin-bottom:15px;
+  border:1px solid rgba(20,50,90,.06);
+  box-shadow:0 10px 30px rgba(20,35,60,.06);
+}
+
+.searchResults{
+  display:grid;
+  gap:10px;
+}
+
+.userCard{
+  background:white;
+  border-radius:17px;
+  padding:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 8px 25px rgba(20,35,60,.06);
+  border:1px solid rgba(20,50,90,.06);
+}
+
+.userLeft{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.searchUserClickable{
+  cursor:pointer;
+  flex:1;
+}
+
+/* =========================
+   PERFIL PÚBLICO
+========================= */
+
+.publicProfile{
+  overflow:hidden;
+  padding:0!important;
+}
+
+.profileHero{
+  background:linear-gradient(135deg,#0a69da,#64a8ff);
+  height:145px;
+  border-radius:22px 22px 0 0;
+  position:relative;
+}
+
+.publicProfileBody{
+  padding:0 22px 22px;
+}
+
+.publicProfileTop{
+  display:flex;
+  align-items:flex-end;
+  gap:18px;
+  margin-top:-52px;
+  position:relative;
+}
+
+.publicProfileAvatar{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#dfeeff;
+  border:5px solid #fff;
+  box-shadow:0 8px 25px rgba(0,0,0,.18);
+}
+
+.publicProfileName{
+  font-size:25px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.publicProfileBio{
+  color:#667085;
+  line-height:1.5;
+  margin:12px 0;
+}
+
+.publicStats{
+  display:flex;
+  gap:28px;
+  border-top:1px solid #edf0f4;
+  border-bottom:1px solid #edf0f4;
+  padding:16px 0;
+  margin:16px 0;
+}
+
+.publicStats div{
+  text-align:center;
+  min-width:75px;
+}
+
+.publicStats strong{
+  display:block;
+  font-size:19px;
+}
+
+.publicStats span{
+  font-size:12px;
+  color:#7b8798;
+}
+
+.publicActions{
+  display:flex;
+  gap:10px;
+}
+
+.publicActions button{
+  flex:1;
+}
+
+.followBig{
+  background:#0878e8;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:12px;
+  font-weight:700;
+}
+
+.followBig.following{
+  background:#edf4fc;
+  color:#0867d8;
+}
+
+.publicPostsTitle{
+  font-size:18px;
+  margin:24px 0 12px;
+}
+
+#publicProfileModal .modalBox{
+  max-width:650px;
+  padding:22px;
+}
+
+/* =========================
+   MODALES
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(8,18,35,.58);
+  backdrop-filter:blur(5px);
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+
+.modalBox{
+  background:white;
+  width:100%;
+  max-width:500px;
+  max-height:90vh;
+  overflow:auto;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.modalHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.close{
+  background:#edf1f5;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  font-size:18px;
+}
+
+.comment{
+  padding:12px;
+  background:#f5f7fa;
+  border-radius:12px;
+  margin-bottom:8px;
+}
+
+.comment strong{
+  display:block;
+  margin-bottom:4px;
+}
+
+.commentInput{
+  display:flex;
+  gap:8px;
+  margin-top:15px;
+}
+
+.commentInput input{
+  flex:1;
+  padding:12px;
+  border:1px solid #d8dee8;
+  border-radius:12px;
+}
+
+.smallPrimary{
+  background:#0878e8;
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+/* =========================
+   ESTADOS
+========================= */
+
+.loading{
+  text-align:center;
+  padding:35px;
+  color:#687386;
+}
+
+.empty{
+  background:white;
+  border-radius:18px;
+  padding:30px;
+  text-align:center;
+  color:#748095;
+  box-shadow:0 8px 25px rgba(20,35,60,.05);
+}
+
+/* =========================
+   MÓVIL
+========================= */
+
+@media(max-width:600px){
+
+  .topbar{
+    padding:0 12px;
+  }
+
+  .topLogo{
+    font-size:27px;
+  }
+
+  .layout{
+    padding:12px 8px 90px;
+  }
+
+  .nav{
+    position:sticky;
+    top:66px;
+    z-index:10;
+    overflow-x:auto;
+    justify-content:flex-start;
+  }
+
+  .nav button{
+    min-width:92px;
+    font-size:12px;
+    padding:10px 5px;
+  }
+
+  .profileHead{
+    align-items:flex-start;
+  }
+
+  .profileAvatar{
+    width:78px;
+    height:78px;
+  }
+
+  .profileStats{
+    gap:15px;
+  }
+
+  .profileStats strong{
+    font-size:17px;
+  }
+
+  .actions{
+    flex-wrap:wrap;
+  }
+
+  .publicProfileTop{
+    align-items:flex-end;
+  }
+
+  .publicProfileAvatar{
+    width:85px;
+    height:85px;
+  }
+
+  .publicProfileName{
+    font-size:20px;
+  }
+
+  .publicStats{
+    gap:10px;
+    justify-content:space-between;
+  }
+
+  .publicStats div{
+    min-width:0;
+    flex:1;
+  }
+
+  .authBox{
+    padding:24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOGIN / REGISTRO
+========================= -->
+
+<section id="authScreen">
+
+  <div class="authBox">
+
+    <div class="logo">
+      Junta
+    </div>
+
+    <div class="subtitle">
+      Conecta, comparte y descubre.
+    </div>
+
+    <div id="loginForm">
+
+      <h2>Iniciar sesión</h2>
+
+      <input
+        id="loginEmail"
+        class="input"
+        type="email"
+        placeholder="Correo electrónico"
+        autocomplete="email"
+      >
+
+      <input
+        id="loginPassword"
+        class="input"
+        type="password"
+        placeholder="Contraseña"
+        autocomplete="current-password"
+      >
+
+      <button id="loginBtn" class="primary">
+        Iniciar sesión
+      </button>
+
+      <button id="forgotBtn" class="linkButton">
+        ¿Olvidaste tu contraseña?
+      </button>
+
+      <button id="showRegisterBtn" class="secondary">
+        Crear una cuenta
+      </button>
+
+    </div>
+
+    <div id="registerForm" class="hidden">
+
+      <h2>Crear cuenta</h2>
+
+      <input
+        id="registerUsername"
+        class="input"
+        type="text"
+        placeholder="Nombre de usuario"
+        maxlength="30"
+      >
+
+      <input
+        id="registerEmail"
+        class="input"
+        type="email"
+        placeholder="Correo electrónico"
+        autocomplete="email"
+      >
+
+      <input
+        id="registerPassword"
+        class="input"
+        type="password"
+        placeholder="Contraseña"
+        autocomplete="new-password"
+      >
+
+      <input
+        id="registerPassword2"
+        class="input"
+        type="password"
+        placeholder="Repite la contraseña"
+        autocomplete="new-password"
+      >
+
+      <button id="registerBtn" class="primary">
+        Crear mi cuenta
+      </button>
+
+      <button id="showLoginBtn" class="secondary">
+        Ya tengo una cuenta
+      </button>
+
+    </div>
+
+    <div id="authMessage" class="authMessage hidden"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     APLICACIÓN
+========================= -->
+
+<section id="app" class="hidden">
+
+  <header class="topbar">
+
+    <div class="topLogo">
+      Junta
+    </div>
+
+    <div class="topActions">
+
+      <button
+        class="iconBtn"
+        id="topSearchBtn"
+        title="Buscar"
+      >
+        🔎
+      </button>
+
+      <button
+        class="iconBtn"
+        id="logoutBtn"
+        title="Salir"
+      >
+        ↪
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="layout">
+
+    <nav class="nav">
+
+      <button
+        id="feedTab"
+        class="active"
+      >
+        🏠 Inicio
+      </button>
+
+      <button id="searchTab">
+        🔎 Buscar
+      </button>
+
+      <button id="exploreTab">
+        ✨ Explorar
+      </button>
+
+      <button id="profileTab">
+        👤 Perfil
+      </button>
+
+      <button id="createTab">
+        ＋ Publicar
+      </button>
+
+    </nav>
+
+
+    <!-- =====================
+         INICIO
+    ====================== -->
+
+    <section id="feedSection">
+
+      <div class="createBox">
+
+        <div class="createTop">
+
+          <img
+            id="miniAvatar"
+            class="avatar"
+            src=""
+            alt=""
+          >
+
+          <div
+            id="openCreate"
+            class="fakeInput"
+          >
+            ¿Qué quieres compartir?
+          </div>
+
+        </div>
+
+      </div>
+
+      <div id="feed">
+
+        <div class="loading">
+          Cargando publicaciones...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================
+         BUSCAR
+    ====================== -->
+
+    <section id="searchSection" class="hidden">
+
+      <div class="searchBox">
+
+        <input
+          id="searchInput"
+          class="input"
+          placeholder="Buscar usuarios..."
+        >
+
+      </div>
+
+      <div id="searchResults" class="searchResults"></div>
+
+    </section>
+
+
+    <!-- =====================
+         EXPLORAR
+    ====================== -->
+
+    <section id="exploreSection" class="hidden">
+
+      <div class="searchBox">
+
+        <h2 style="margin-bottom:6px;">
+          Explorar
+        </h2>
+
+        <p style="color:#748095;">
+          Descubre publicaciones de personas que todavía no sigues.
+        </p>
+
+      </div>
+
+      <div id="exploreFeed">
+
+        <div class="loading">
+          Cargando publicaciones...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================
+         PERFIL
+    ====================== -->
+
+    <section id="profileSection" class="hidden">
+
+      <div class="profileBox">
+
+        <div class="profileHead">
+
+          <img
+            id="profileAvatar"
+            class="profileAvatar"
+            src=""
+            alt=""
+          >
+
+          <div class="profileInfo">
+
+            <h2 id="profileUsername">
+              Usuario
+            </h2>
+
+            <div id="profileEmail"></div>
+
+            <div
+              id="profileBio"
+              class="bio"
+            ></div>
+
+            <div class="profileStats">
+
+              <div>
+                <strong id="followersCount">
+                  0
+                </strong>
+
+                <span>
+                  Seguidores
+                </span>
+              </div>
+
+              <div>
+                <strong id="followingCount">
+                  0
+                </strong>
+
+                <span>
+                  Siguiendo
+                </span>
+              </div>
+
+              <div>
+                <strong id="postsCount">
+                  0
+                </strong>
+
+                <span>
+                  Publicaciones
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="editBox">
+
+          <h3 class="sectionTitle">
+            Editar perfil
+          </h3>
+
+          <input
+            id="editUsername"
+            class="input"
+            placeholder="Nombre de usuario"
+            maxlength="30"
+          >
+
+          <textarea
+            id="editBio"
+            class="input"
+            placeholder="Biografía"
+            maxlength="150"
+            style="min-height:80px"
+          ></textarea>
+
+          <div class="fileRow">
+
+            <label class="fileButton">
+
+              📷 Cambiar foto
+
+              <input
+                id="profilePhotoInput"
+                type="file"
+                accept="image/*"
+                hidden
+              >
+
+            </label>
+
+            <span
+              id="profileFileName"
+              class="fileName"
+            ></span>
+
+          </div>
+
+          <button
+            id="saveProfileBtn"
+            class="primary"
+          >
+            Guardar perfil
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <h3 style="margin:20px 5px 12px;">
+        Mis publicaciones
+      </h3>
+
+      <div id="myPosts"></div>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+<!-- =========================
+     MODAL PUBLICAR
+========================= -->
+
+<div
+  id="createModal"
+  class="modal hidden"
+>
+
+  <div class="modalBox">
+
+    <div class="modalHeader">
+
+      <h2>
+        Nueva publicación
+      </h2>
+
+      <button
+        id="closeCreate"
+        class="close"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <textarea
+      id="postText"
+      placeholder="Escribe algo..."
+      style="
+        width:100%;
+        min-height:100px;
+        padding:13px;
+        border:1px solid #d8dee8;
+        border-radius:12px;
+        resize:vertical;
+      "
+    ></textarea>
+
+    <div class="fileRow">
+
+      <label class="fileButton">
+
+        🖼️ Foto o video
+
+        <input
+          id="postFile"
+          type="file"
+          accept="image/*,video/*"
+          hidden
+        >
+
+      </label>
+
+      <span
+        id="postFileName"
+        class="fileName"
+      ></span>
+
+    </div>
+
+    <div id="postPreview"></div>
+
+    <button
+      id="publishBtn"
+      class="primary"
+    >
+      Publicar
+    </button>
+
+    <div
+      id="publishMessage"
+      class="authMessage hidden"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL COMENTARIOS
+========================= -->
+
+<div
+  id="commentsModal"
+  class="modal hidden"
+>
+
+  <div class="modalBox">
+
+    <div class="modalHeader">
+
+      <h2>
+        Comentarios
+      </h2>
+
+      <button
+        id="closeComments"
+        class="close"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="commentsList"></div>
+
+    <div class="commentInput">
+
+      <input
+        id="commentInput"
+        placeholder="Escribe un comentario..."
+      >
+
+      <button
+        id="sendCommentBtn"
+        class="smallPrimary"
+      >
+        Enviar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL PERFIL PÚBLICO
+========================= -->
+
+<div
+  id="publicProfileModal"
+  class="modal hidden"
+>
+
+  <div class="modalBox publicProfile">
+
+    <div class="profileHero"></div>
+
+    <div class="publicProfileBody">
+
+      <div class="publicProfileTop">
+
+        <img
+          id="publicProfileAvatar"
+          class="publicProfileAvatar"
+          src=""
+          alt=""
+        >
+
+        <div>
+
+          <div
+            id="publicProfileUsername"
+            class="publicProfileName"
+          >
+            Usuario
+          </div>
+
+        </div>
+
+      </div>
+
+      <div
+        id="publicProfileBio"
+        class="publicProfileBio"
+      ></div>
+
+      <div class="publicStats">
+
+        <div>
+
+          <strong id="publicFollowersCount">
+            0
+          </strong>
+
+          <span>
+            Seguidores
+          </span>
+
+        </div>
+
+        <div>
+
+          <strong id="publicFollowingCount">
+            0
+          </strong>
+
+          <span>
+            Siguiendo
+          </span>
+
+        </div>
+
+        <div>
+
+          <strong id="publicPostsCount">
+            0
+          </strong>
+
+          <span>
+            Publicaciones
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="publicActions">
+
+        <button
+          id="publicFollowBtn"
+          class="followBig"
+        >
+          Seguir
+        </button>
+
+        <button
+          id="closePublicProfile"
+          class="secondary"
+          style="margin-top:0;"
+        >
+          Cerrar
+        </button>
+
+      </div>
+
+      <h3 class="publicPostsTitle">
+        Publicaciones
+      </h3>
+
+      <div id="publicProfilePosts"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  addDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+/* =====================================================
+   CONFIGURACIÓN FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyBlfv0pZJ4G68rDMaSNG_S2EGOptBVae_E",
+
+  authDomain:
+    "mi-red-a687d.firebaseapp.com",
+
+  projectId:
+    "mi-red-a687d",
+
+  storageBucket:
+    "mi-red-a687d.firebasestorage.app",
+
+  messagingSenderId:
+    "9017246628",
+
+  appId:
+    "1:9017246628:web:175a4126dfa4d3e5627731",
+
+  measurementId:
+    "G-1KK0C750BQ"
+
+};
+
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
+
+
+/* =====================================================
+   CLOUDINARY
+===================================================== */
+
+const CLOUDINARY_CLOUD_NAME =
+  "olte8v49";
+
+const CLOUDINARY_UPLOAD_PRESET =
+  "Social red";
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let currentUser = null;
+
+let currentProfile = null;
+
+let unsubscribePosts = null;
+
+let currentCommentPostId = null;
+
+let currentPublicProfileUid = null;
+
+
+/* =====================================================
+   ELEMENTOS
+===================================================== */
+
+const authScreen =
+  document.getElementById(
+    "authScreen"
+  );
+
+const appScreen =
+  document.getElementById(
+    "app"
+  );
+
+
+const feedSection =
+  document.getElementById(
+    "feedSection"
+  );
+
+const searchSection =
+  document.getElementById(
+    "searchSection"
+  );
+
+const exploreSection =
+  document.getElementById(
+    "exploreSection"
+  );
+
+const profileSection =
+  document.getElementById(
+    "profileSection"
+  );
+
+
+const feedTab =
+  document.getElementById(
+    "feedTab"
+  );
+
+const searchTab =
+  document.getElementById(
+    "searchTab"
+  );
+
+const exploreTab =
+  document.getElementById(
+    "exploreTab"
+  );
+
+const profileTab =
+  document.getElementById(
+    "profileTab"
+  );
+
+const createTab =
+  document.getElementById(
+    "createTab"
+  );
+
+
+/* =====================================================
+   AVATAR POR DEFECTO
+===================================================== */
+
+function defaultAvatar(
+  username="J"
+){
+
+  const letter =
+    String(username)
+      .charAt(0)
+      .toUpperCase() || "J";
+
+  return (
+    "https://via.placeholder.com/200/" +
+    "eaf4ff/0867d8?text=" +
+    encodeURIComponent(letter)
+  );
+
+}
+
+
+/* =====================================================
+   MENSAJES DE FIREBASE
+===================================================== */
+
+function firebaseError(error){
+
+  const code =
+    error?.code || "";
+
+  if(
+    code.includes(
+      "auth/email-already-in-use"
+    )
+  ){
+
+    return "Ese correo ya está registrado.";
+
+  }
+
+  if(
+    code.includes(
+      "auth/invalid-email"
+    )
+  ){
+
+    return "El correo no es válido.";
+
+  }
+
+  if(
+    code.includes(
+      "auth/weak-password"
+    )
+  ){
+
+    return "La contraseña debe tener al menos 6 caracteres.";
+
+  }
+
+  if(
+    code.includes(
+      "auth/invalid-credential"
+    ) ||
+    code.includes(
+      "auth/wrong-password"
+    ) ||
+    code.includes(
+      "auth/user-not-found"
+    )
+  ){
+
+    return "Correo o contraseña incorrectos.";
+
+  }
+
+  return (
+    error?.message ||
+    "Ocurrió un error."
+  );
+
+}
+
+
+/* =====================================================
+   MENSAJE AUTH
+===================================================== */
+
+function showAuthMessage(
+  message,
+  isError=false
+){
+
+  const element =
+    document.getElementById(
+      "authMessage"
+    );
+
+  element.textContent =
+    message;
+
+  element.classList.remove(
+    "hidden"
+  );
+
+  element.classList.toggle(
+    "error",
+    isError
+  );
+
+}
+
+
+function hideAuthMessage(){
+
+  document
+    .getElementById(
+      "authMessage"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+}
+
+
+/* =====================================================
+   CAMBIAR LOGIN / REGISTRO
+===================================================== */
+
+document
+  .getElementById(
+    "showRegisterBtn"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "loginForm"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+      document
+        .getElementById(
+          "registerForm"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+      hideAuthMessage();
+    }
+  );
+
+
+document
+  .getElementById(
+    "showLoginBtn"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "registerForm"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+      document
+        .getElementById(
+          "loginForm"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+      hideAuthMessage();
+    }
+  );
+
+
+/* =====================================================
+   REGISTRO
+===================================================== */
+
+document
+  .getElementById(
+    "registerBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const username =
+        document
+          .getElementById(
+            "registerUsername"
+          )
+          .value
+          .trim();
+
+      const email =
+        document
+          .getElementById(
+            "registerEmail"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "registerPassword"
+          )
+          .value;
+
+      const password2 =
+        document
+          .getElementById(
+            "registerPassword2"
+          )
+          .value;
+
+
+      if(
+        !username ||
+        !email ||
+        !password ||
+        !password2
+      ){
+
+        showAuthMessage(
+          "Completa todos los campos.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      if(
+        password !== password2
+      ){
+
+        showAuthMessage(
+          "Las contraseñas no coinciden.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      if(
+        password.length < 6
+      ){
+
+        showAuthMessage(
+          "La contraseña debe tener al menos 6 caracteres.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      const button =
+        document.getElementById(
+          "registerBtn"
+        );
+
+      button.disabled = true;
+
+      button.textContent =
+        "Creando cuenta...";
+
+      hideAuthMessage();
+
+
+      try{
+
+        const credential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+
+        localStorage.setItem(
+          "junta_new_username",
+          username
+        );
+
+
+        showAuthMessage(
+          "Cuenta creada. Entrando a Junta..."
+        );
+
+      }catch(error){
+
+        console.error(error);
+
+        showAuthMessage(
+          firebaseError(error),
+          true
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+          "Crear mi cuenta";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   INICIAR SESIÓN
+===================================================== */
+
+document
+  .getElementById(
+    "loginBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const email =
+        document
+          .getElementById(
+            "loginEmail"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "loginPassword"
+          )
+          .value;
+
+
+      if(
+        !email ||
+        !password
+      ){
+
+        showAuthMessage(
+          "Completa correo y contraseña.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      const button =
+        document.getElementById(
+          "loginBtn"
+        );
+
+      button.disabled = true;
+
+      button.textContent =
+        "Entrando...";
+
+
+      try{
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      }catch(error){
+
+        console.error(error);
+
+        showAuthMessage(
+          firebaseError(error),
+          true
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+          "Iniciar sesión";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   RECUPERAR CONTRASEÑA
+===================================================== */
+
+document
+  .getElementById(
+    "forgotBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const email =
+        document
+          .getElementById(
+            "loginEmail"
+          )
+          .value
+          .trim();
+
+
+      if(!email){
+
+        showAuthMessage(
+          "Primero escribe tu correo.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      try{
+
+        await sendPasswordResetEmail(
+          auth,
+          email
+        );
+
+        showAuthMessage(
+          "Te enviamos un correo para restablecer la contraseña."
+        );
+
+      }catch(error){
+
+        showAuthMessage(
+          firebaseError(error),
+          true
+        );
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+onAuthStateChanged(
+  auth,
+  async user=>{
+
+    if(user){
+
+      currentUser =
+        user;
+
+      authScreen
+        .classList
+        .add("hidden");
+
+      appScreen
+        .classList
+        .remove("hidden");
+
+
+      try{
+
+        await ensureUserProfile(
+          user
+        );
+
+      }catch(error){
+
+        console.error(
+          "No se pudo guardar el perfil:",
+          error
+        );
+
+
+        currentProfile = {
+
+          uid:user.uid,
+
+          username:
+            user.email
+              ?.split("@")[0]
+              ?.replace(
+                /[^a-zA-Z0-9_]/g,
+                ""
+              )
+              ?.slice(0,25)
+              ||
+              "usuario",
+
+          email:
+            user.email || "",
+
+          bio:"",
+
+          photoURL:""
+
+        };
+
+      }
+
+
+      updateProfileUI();
+
+      startPostsListener();
+
+      showSection(
+        "feed"
+      );
+
+    }else{
+
+      currentUser = null;
+
+      currentProfile = null;
+
+      if(
+        unsubscribePosts
+      ){
+
+        unsubscribePosts();
+
+        unsubscribePosts =
+          null;
+
+      }
+
+      appScreen
+        .classList
+        .add("hidden");
+
+      authScreen
+        .classList
+        .remove("hidden");
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   CREAR / OBTENER PERFIL
+===================================================== */
+
+async function ensureUserProfile(
+  user
+){
+
+  const profileRef =
+    doc(
+      db,
+      "users",
+      user.uid
+    );
+
+
+  const snapshot =
+    await getDoc(
+      profileRef
+    );
+
+
+  if(snapshot.exists()){
+
+    currentProfile = {
+
+      uid:user.uid,
+
+      ...snapshot.data(),
+
+      email:
+        user.email ||
+        snapshot.data().email ||
+        ""
+
+    };
+
+    return;
+
+  }
+
+
+  const savedUsername =
+    localStorage.getItem(
+      "junta_new_username"
+    );
+
+
+  const username =
+    savedUsername ||
+    user.email
+      ?.split("@")[0]
+      ?.replace(
+        /[^a-zA-Z0-9_]/g,
+        ""
+      )
+      ?.slice(0,25) ||
+    "usuario";
+
+
+  const newProfile = {
+
+    uid:user.uid,
+
+    username:username,
+
+    usernameLower:
+      username.toLowerCase(),
+
+    email:
+      user.email || "",
+
+    bio:"",
+
+    photoURL:"",
+
+    createdAt:
+      serverTimestamp()
+
+  };
+
+
+  await setDoc(
+    profileRef,
+    newProfile
+  );
+
+
+  localStorage.removeItem(
+    "junta_new_username"
+  );
+
+
+  currentProfile =
+    newProfile;
+
+}
+
+
+/* =====================================================
+   ACTUALIZAR UI PERFIL
+===================================================== */
+
+function updateProfileUI(){
+
+  if(!currentProfile)
+    return;
+
+
+  const username =
+    currentProfile.username ||
+    "usuario";
+
+
+  const photo =
+    currentProfile.photoURL ||
+    defaultAvatar(
+      username
+    );
+
+
+  document
+    .getElementById(
+      "miniAvatar"
+    )
+    .src =
+    photo;
+
+
+  document
+    .getElementById(
+      "profileAvatar"
+    )
+    .src =
+    photo;
+
+
+  document
+    .getElementById(
+      "profileUsername"
+    )
+    .textContent =
+    username;
+
+
+  document
+    .getElementById(
+      "profileEmail"
+    )
+    .textContent =
+    currentProfile.email ||
+    currentUser?.email ||
+    "";
+
+
+  document
+    .getElementById(
+      "profileBio"
+    )
+    .textContent =
+    currentProfile.bio ||
+    "Todavía no tienes una biografía.";
+
+
+  document
+    .getElementById(
+      "editUsername"
+    )
+    .value =
+    username;
+
+
+  document
+    .getElementById(
+      "editBio"
+    )
+    .value =
+    currentProfile.bio ||
+    "";
+
+}
+
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+function showSection(
+  section
+){
+
+  feedSection
+    .classList
+    .add("hidden");
+
+  searchSection
+    .classList
+    .add("hidden");
+
+  exploreSection
+    .classList
+    .add("hidden");
+
+  profileSection
+    .classList
+    .add("hidden");
+
+
+  feedTab
+    .classList
+    .remove("active");
+
+  searchTab
+    .classList
+    .remove("active");
+
+  exploreTab
+    .classList
+    .remove("active");
+
+  profileTab
+    .classList
+    .remove("active");
+
+
+  if(section === "feed"){
+
+    feedSection
+      .classList
+      .remove("hidden");
+
+    feedTab
+      .classList
+      .add("active");
+
+  }
+
+
+  if(section === "search"){
+
+    searchSection
+      .classList
+      .remove("hidden");
+
+    searchTab
+      .classList
+      .add("active");
+
+  }
+
+
+  if(section === "explore"){
+
+    exploreSection
+      .classList
+      .remove("hidden");
+
+    exploreTab
+      .classList
+      .add("active");
+
+    loadExplore();
+
+  }
+
+
+  if(section === "profile"){
+
+    profileSection
+      .classList
+      .remove("hidden");
+
+    profileTab
+      .classList
+      .add("active");
+
+    loadProfile();
+
+  }
+
+}
+
+
+feedTab
+  .addEventListener(
+    "click",
+    ()=>{
+      showSection("feed");
+    }
+  );
+
+
+searchTab
+  .addEventListener(
+    "click",
+    ()=>{
+      showSection("search");
+    }
+  );
+
+
+exploreTab
+  .addEventListener(
+    "click",
+    ()=>{
+      showSection("explore");
+    }
+  );
+
+
+profileTab
+  .addEventListener(
+    "click",
+    ()=>{
+      showSection("profile");
+    }
+  );
+
+
+createTab
+  .addEventListener(
+    "click",
+    ()=>{
+      openCreateModal();
+    }
+  );
+
+
+document
+  .getElementById(
+    "topSearchBtn"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+      showSection("search");
+
+      document
+        .getElementById(
+          "searchInput"
+        )
+        .focus();
+    }
+  );
+
+
+/* =====================================================
+   MODAL PUBLICAR
+===================================================== */
+
+function openCreateModal(){
+
+  document
+    .getElementById(
+      "createModal"
+    )
+    .classList
+    .remove("hidden");
+
+}
+
+
+function closeCreateModal(){
+
+  document
+    .getElementById(
+      "createModal"
+    )
+    .classList
+    .add("hidden");
+
+}
+
+
+document
+  .getElementById(
+    "openCreate"
+  )
+  .addEventListener(
+    "click",
+    openCreateModal
+  );
+
+
+document
+  .getElementById(
+    "closeCreate"
+  )
+  .addEventListener(
+    "click",
+    closeCreateModal
+  );
+
+
+/* =====================================================
+   PREVISUALIZAR PUBLICACIÓN
+===================================================== */
+
+document
+  .getElementById(
+    "postFile"
+  )
+  .addEventListener(
+    "change",
+    function(){
+
+      const file =
+        this.files[0];
+
+      const name =
+        document.getElementById(
+          "postFileName"
+        );
+
+      const preview =
+        document.getElementById(
+          "postPreview"
+        );
+
+
+      preview.innerHTML = "";
+
+      if(!file){
+
+        name.textContent = "";
+
+        return;
+
+      }
+
+
+      name.textContent =
+        file.name;
+
+
+      const url =
+        URL.createObjectURL(
+          file
+        );
+
+
+      if(
+        file.type.startsWith(
+          "video/"
+        )
+      ){
+
+        const video =
+          document.createElement(
+            "video"
+          );
+
+        video.src = url;
+
+        video.controls = true;
+
+        video.className =
+          "preview";
+
+        preview.appendChild(
+          video
+        );
+
+      }else{
+
+        const img =
+          document.createElement(
+            "img"
+          );
+
+        img.src = url;
+
+        img.className =
+          "preview";
+
+        preview.appendChild(
+          img
+        );
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   CLOUDINARY UPLOAD
+===================================================== */
+
+async function uploadToCloudinary(
+  file
+){
+
+  const form =
+    new FormData();
+
+
+  form.append(
+    "file",
+    file
+  );
+
+
+  form.append(
+    "upload_preset",
+    CLOUDINARY_UPLOAD_PRESET
+  );
+
+
+  const response =
+    await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+      {
+        method:"POST",
+        body:form
+      }
+    );
+
+
+  if(!response.ok){
+
+    throw new Error(
+      "Cloudinary rechazó el archivo."
+    );
+
+  }
+
+
+  return await response.json();
+
+}
+
+
+/* =====================================================
+   PUBLICAR
+===================================================== */
+
+document
+  .getElementById(
+    "publishBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const text =
+        document
+          .getElementById(
+            "postText"
+          )
+          .value
+          .trim();
+
+
+      const file =
+        document
+          .getElementById(
+            "postFile"
+          )
+          .files[0];
+
+
+      const button =
+        document.getElementById(
+          "publishBtn"
+        );
+
+
+      if(
+        !text &&
+        !file
+      ){
+
+        alert(
+          "Escribe algo o selecciona una foto/video."
+        );
+
+        return;
+
+      }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "Publicando...";
+
+
+      try{
+
+        let mediaURL = "";
+
+        let mediaType = "";
+
+
+        if(file){
+
+          const uploaded =
+            await uploadToCloudinary(
+              file
+            );
+
+
+          mediaURL =
+            uploaded.secure_url;
+
+          mediaType =
+            file.type.startsWith(
+              "video/"
+            )
+              ? "video"
+              : "image";
+
+        }
+
+
+        await addDoc(
+          collection(
+            db,
+            "posts"
+          ),
+          {
+
+            uid:
+              currentUser.uid,
+
+            username:
+              currentProfile?.username ||
+              "usuario",
+
+            userPhotoURL:
+              currentProfile?.photoURL ||
+              "",
+
+            text:text,
+
+            mediaURL:
+              mediaURL,
+
+            mediaType:
+              mediaType,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        document
+          .getElementById(
+            "postText"
+          )
+          .value = "";
+
+        document
+          .getElementById(
+            "postFile"
+          )
+          .value = "";
+
+        document
+          .getElementById(
+            "postFileName"
+          )
+          .textContent = "";
+
+        document
+          .getElementById(
+            "postPreview"
+          )
+          .innerHTML = "";
+
+
+        closeCreateModal();
+
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          "No se pudo publicar. Revisa Firebase y Cloudinary."
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+          "Publicar";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   CARGAR PUBLICACIONES EN TIEMPO REAL
+===================================================== */
+
+function startPostsListener(){
+
+  if(unsubscribePosts){
+
+    unsubscribePosts();
+
+  }
+
+
+  const postsQuery =
+    query(
+      collection(
+        db,
+        "posts"
+      ),
+      orderBy(
+        "createdAt",
+        "desc"
+      )
+    );
+
+
+  unsubscribePosts =
+    onSnapshot(
+      postsQuery,
+      async snapshot=>{
+
+        const feed =
+          document.getElementById(
+            "feed"
+          );
+
+
+        feed.innerHTML = "";
+
+
+        if(snapshot.empty){
+
+          feed.innerHTML =
+            `<div class="empty">
+              Todavía no hay publicaciones.
+             </div>`;
+
+          return;
+
+        }
+
+
+        for(
+          const docSnap
+          of snapshot.docs
+        ){
+
+          const post = {
+
+            id:
+              docSnap.id,
+
+            ...docSnap.data()
+
+          };
+
+
+          try{
+
+            const element =
+              await createPostElement(
+                post
+              );
+
+            feed.appendChild(
+              element
+            );
+
+          }catch(error){
+
+            console.error(
+              error
+            );
+
+          }
+
+        }
+
+      },
+      error=>{
+
+        console.error(
+          "Error publicaciones:",
+          error
+        );
+
+
+        document
+          .getElementById(
+            "feed"
+          )
+          .innerHTML =
+          `<div class="empty">
+            No se pudieron cargar las publicaciones.
+           </div>`;
+
+      }
+    );
+
+}
+
+
+/* =====================================================
+   CREAR ELEMENTO DE PUBLICACIÓN
+===================================================== */
+
+async function createPostElement(
+  post
+){
+
+  const article =
+    document.createElement(
+      "article"
+    );
+
+
+  article.className =
+    "post";
+
+
+  let profile =
+    null;
+
+
+  try{
+
+    const profileSnap =
+      await getDoc(
+        doc(
+          db,
+          "users",
+          post.uid
+        )
+      );
+
+
+    if(
+      profileSnap.exists()
+    ){
+
+      profile =
+        profileSnap.data();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+
+  const username =
+    profile?.username ||
+    post.username ||
+    "usuario";
+
+
+  const photo =
+    profile?.photoURL ||
+    post.userPhotoURL ||
+    defaultAvatar(
+      username
+    );
+
+
+  let mediaHTML = "";
+
+
+  if(
+    post.mediaURL &&
+    post.mediaType === "image"
+  ){
+
+    mediaHTML =
+      `
+      <img
+        class="postMedia"
+        src="${escapeAttr(post.mediaURL)}"
+        alt="Publicación"
+        loading="lazy"
+      >
+      `;
+
+  }
+
+
+  if(
+    post.mediaURL &&
+    post.mediaType === "video"
+  ){
+
+    mediaHTML =
+      `
+      <video
+        class="postMedia"
+        src="${escapeAttr(post.mediaURL)}"
+        controls
+        preload="metadata"
+      ></video>
+      `;
+
+  }
+
+
+  article.innerHTML = `
+
+    <div class="postHeader">
+
+      <div
+        class="userInfo clickableUser"
+        data-profile="${escapeAttr(post.uid)}"
+        title="Ver perfil"
+      >
+
+        <img
+          class="avatar"
+          src="${escapeAttr(photo)}"
+          alt=""
+        >
+
+        <div>
+
+          <strong>
+            ${escapeHTML(username)}
+          </strong>
+
+          <div class="time">
+            ${escapeHTML(
+              formatDate(
+                post.createdAt
+              )
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+      ${
+        post.uid === currentUser.uid
+          ? `
+            <button
+              class="moreBtn deletePostBtn"
+              title="Eliminar"
+            >
+              ⋯
+            </button>
+            `
+          : ""
+      }
+
+    </div>
+
+    ${
+      post.text
+        ? `
+          <div class="postText">
+            ${escapeHTML(
+              post.text
+            )}
+          </div>
+          `
+        : ""
+    }
+
+    ${mediaHTML}
+
+    <div class="actions">
+
+      <button
+        class="actionBtn likeBtn"
+      >
+        ♡ Me gusta
+      </button>
+
+      <button
+        class="actionBtn commentBtn"
+      >
+        💬 Comentarios
+      </button>
+
+      <button
+        class="actionBtn profileBtn"
+      >
+        👤 Perfil
+      </button>
+
+    </div>
+
+    <div class="stats">
+
+      <span class="likeCount">
+        0 me gusta
+      </span>
+
+    </div>
+
+  `;
+
+
+  article
+    .querySelector(
+      ".userInfo"
+    )
+    ?.addEventListener(
+      "click",
+      ()=>{
+        openPublicProfile(
+          post.uid
+        );
+      }
+    );
+
+
+  article
+    .querySelector(
+      ".profileBtn"
+    )
+    ?.addEventListener(
+      "click",
+      ()=>{
+        openPublicProfile(
+          post.uid
+        );
+      }
+    );
+
+
+  const likeBtn =
+    article.querySelector(
+      ".likeBtn"
+    );
+
+
+  const likeRef =
+    doc(
+      db,
+      "posts",
+      post.id,
+      "likes",
+      currentUser.uid
+    );
+
+
+  try{
+
+    const likeSnap =
+      await getDoc(
+        likeRef
+      );
+
+
+    if(
+      likeSnap.exists()
+    ){
+
+      likeBtn.classList.add(
+        "liked"
+      );
+
+      likeBtn.textContent =
+        "♥ Me gusta";
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+
+  likeBtn.addEventListener(
+    "click",
+    async ()=>{
+
+      try{
+
+        const existing =
+          await getDoc(
+            likeRef
+          );
+
+
+        if(
+          existing.exists()
+        ){
+
+          await deleteDoc(
+            likeRef
+          );
+
+          likeBtn.classList.remove(
+            "liked"
+          );
+
+          likeBtn.textContent =
+            "♡ Me gusta";
+
+        }else{
+
+          await setDoc(
+            likeRef,
+            {
+
+              uid:
+                currentUser.uid,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+          likeBtn.classList.add(
+            "liked"
+          );
+
+          likeBtn.textContent =
+            "♥ Me gusta";
+
+        }
+
+
+        const likesSnap =
+          await getDocs(
+            collection(
+              db,
+              "posts",
+              post.id,
+              "likes"
+            )
+          );
+
+
+        article
+          .querySelector(
+            ".likeCount"
+          )
+          .textContent =
+          `${likesSnap.size} me gusta`;
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        alert(
+          "No se pudo cambiar el me gusta."
+        );
+
+      }
+
+    }
+  );
+
+
+  article
+    .querySelector(
+      ".commentBtn"
+    )
+    ?.addEventListener(
+      "click",
+      ()=>{
+        openComments(
+          post.id
+        );
+      }
+    );
+
+
+  article
+    .querySelector(
+      ".deletePostBtn"
+    )
+    ?.addEventListener(
+      "click",
+      async ()=>{
+
+        if(
+          !confirm(
+            "¿Quieres eliminar esta publicación?"
+          )
+        ){
+
+          return;
+
+        }
+
+
+        try{
+
+          await deleteDoc(
+            doc(
+              db,
+              "posts",
+              post.id
+            )
+          );
+
+        }catch(error){
+
+          console.error(
+            error
+          );
+
+          alert(
+            "No se pudo eliminar."
+          );
+
+        }
+
+      }
+    );
+
+
+  try{
+
+    const likesSnap =
+      await getDocs(
+        collection(
+          db,
+          "posts",
+          post.id,
+          "likes"
+        )
+      );
+
+
+    article
+      .querySelector(
+        ".likeCount"
+      )
+      .textContent =
+      `${likesSnap.size} me gusta`;
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+
+  return article;
+
+}
+
+
+/* =====================================================
+   COMENTARIOS
+===================================================== */
+
+async function openComments(
+  postId
+){
+
+  currentCommentPostId =
+    postId;
+
+
+  document
+    .getElementById(
+      "commentsModal"
+    )
+    .classList
+    .remove("hidden");
+
+
+  const list =
+    document.getElementById(
+      "commentsList"
+    );
+
+
+  list.innerHTML =
+    `<div class="loading">
+      Cargando comentarios...
+     </div>`;
+
+
+  try{
+
+    const commentsSnap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "posts",
+            postId,
+            "comments"
+          ),
+          orderBy(
+            "createdAt",
+            "asc"
+          )
+        )
+      );
+
+
+    list.innerHTML = "";
+
+
+    if(
+      commentsSnap.empty
+    ){
+
+      list.innerHTML =
+        `<div class="empty">
+          Todavía no hay comentarios.
+         </div>`;
+
+      return;
+
+    }
+
+
+    commentsSnap.forEach(
+      commentDoc=>{
+
+        const comment =
+          commentDoc.data();
+
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "comment";
+
+
+        div.innerHTML = `
+
+          <strong>
+            ${escapeHTML(
+              comment.username ||
+              "usuario"
+            )}
+          </strong>
+
+          <div>
+            ${escapeHTML(
+              comment.text ||
+              ""
+            )}
+          </div>
+
+        `;
+
+
+        list.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    list.innerHTML =
+      `<div class="empty">
+        No se pudieron cargar los comentarios.
+       </div>`;
+
+  }
+
+}
+
+
+document
+  .getElementById(
+    "closeComments"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "commentsModal"
+        )
+        .classList
+        .add("hidden");
+    }
+  );
+
+
+document
+  .getElementById(
+    "sendCommentBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      if(
+        !currentCommentPostId
+      ){
+
+        return;
+
+      }
+
+
+      const input =
+        document.getElementById(
+          "commentInput"
+        );
+
+
+      const text =
+        input.value.trim();
+
+
+      if(!text)
+        return;
+
+
+      try{
+
+        await addDoc(
+          collection(
+            db,
+            "posts",
+            currentCommentPostId,
+            "comments"
+          ),
+          {
+
+            uid:
+              currentUser.uid,
+
+            username:
+              currentProfile?.username ||
+              "usuario",
+
+            text:text,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        input.value = "";
+
+        openComments(
+          currentCommentPostId
+        );
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          "No se pudo publicar el comentario."
+        );
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   BUSCAR USUARIOS
+===================================================== */
+
+document
+  .getElementById(
+    "searchInput"
+  )
+  .addEventListener(
+    "input",
+    debounce(
+      searchUsers,
+      400
+    )
+  );
+
+
+async function searchUsers(){
+
+  const text =
+    document
+      .getElementById(
+        "searchInput"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const results =
+    document.getElementById(
+      "searchResults"
+    );
+
+
+  if(!text){
+
+    results.innerHTML =
+      `<div class="empty">
+        Escribe un nombre para buscar personas.
+       </div>`;
+
+    return;
+
+  }
+
+
+  try{
+
+    const snap =
+      await getDocs(
+        collection(
+          db,
+          "users"
+        )
+      );
+
+
+    const users = [];
+
+
+    snap.forEach(
+      docSnap=>{
+
+        const user =
+          docSnap.data();
+
+
+        const username =
+          (
+            user.username ||
+            ""
+          ).toLowerCase();
+
+
+        if(
+          username.includes(
+            text
+          )
+        ){
+
+          users.push({
+
+            uid:
+              docSnap.id,
+
+            ...user
+
+          });
+
+        }
+
+      }
+    );
+
+
+    results.innerHTML = "";
+
+
+    if(!users.length){
+
+      results.innerHTML =
+        `<div class="empty">
+          No encontramos usuarios.
+         </div>`;
+
+      return;
+
+    }
+
+
+    for(
+      const user
+      of users
+    ){
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "userCard";
+
+
+      const avatar =
+        user.photoURL ||
+        defaultAvatar(
+          user.username
+        );
+
+
+      card.innerHTML = `
+
+        <div
+          class="userLeft searchUserClickable"
+        >
+
+          <img
+            class="avatar"
+            src="${escapeAttr(avatar)}"
+            alt=""
+          >
+
+          <div>
+
+            <strong>
+              ${escapeHTML(
+                user.username ||
+                "usuario"
+              )}
+            </strong>
+
+            <div class="time">
+              ${escapeHTML(
+                user.bio || ""
+              )}
+            </div>
+
+          </div>
+
+        </div>
+
+        ${
+          user.uid !== currentUser.uid
+            ? `
+              <button
+                class="smallPrimary followSearch"
+              >
+                Seguir
+              </button>
+              `
+            : ""
+        }
+
+      `;
+
+
+      card
+        .querySelector(
+          ".userLeft"
+        )
+        ?.addEventListener(
+          "click",
+          ()=>{
+            openPublicProfile(
+              user.uid
+            );
+          }
+        );
+
+
+      const followBtn =
+        card.querySelector(
+          ".followSearch"
+        );
+
+
+      if(followBtn){
+
+        setupFollowButton(
+          followBtn,
+          user.uid
+        );
+
+      }
+
+
+      results.appendChild(
+        card
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    results.innerHTML =
+      `<div class="empty">
+        No se pudo buscar.
+       </div>`;
+
+  }
+
+}
+
+
+/* =====================================================
+   SEGUIR / DEJAR DE SEGUIR
+===================================================== */
+
+async function setupFollowButton(
+  button,
+  targetUid
+){
+
+  if(
+    !currentUser ||
+    !targetUid ||
+    targetUid ===
+    currentUser.uid
+  ){
+
+    return;
+
+  }
+
+
+  const followingRef =
+    doc(
+      db,
+      "users",
+      currentUser.uid,
+      "following",
+      targetUid
+    );
+
+
+  const followerRef =
+    doc(
+      db,
+      "users",
+      targetUid,
+      "followers",
+      currentUser.uid
+    );
+
+
+  async function refresh(){
+
+    try{
+
+      const existing =
+        await getDoc(
+          followingRef
+        );
+
+
+      if(
+        existing.exists()
+      ){
+
+        button.textContent =
+          "Siguiendo";
+
+        button.classList.add(
+          "following"
+        );
+
+      }else{
+
+        button.textContent =
+          "Seguir";
+
+        button.classList.remove(
+          "following"
+        );
+
+      }
+
+    }catch(error){
+
+      console.error(
+        error
+      );
+
+    }
+
+  }
+
+
+  await refresh();
+
+
+  button.onclick =
+    async event=>{
+
+      event.stopPropagation();
+
+
+      button.disabled = true;
+
+
+      try{
+
+        const current =
+          await getDoc(
+            followingRef
+          );
+
+
+        if(
+          current.exists()
+        ){
+
+          await deleteDoc(
+            followingRef
+          );
+
+          await deleteDoc(
+            followerRef
+          );
+
+        }else{
+
+          await setDoc(
+            followingRef,
+            {
+
+              uid:
+                targetUid,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+
+          await setDoc(
+            followerRef,
+            {
+
+              uid:
+                currentUser.uid,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+        }
+
+
+        await refresh();
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        alert(
+          "No se pudo actualizar el seguimiento."
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+      }
+
+    };
+
+}
+
+
+/* =====================================================
+   OBTENER PERSONAS QUE SIGO
+===================================================== */
+
+async function getFollowingIds(){
+
+  if(!currentUser){
+
+    return [];
+
+  }
+
+
+  try{
+
+    const snap =
+      await getDocs(
+        collection(
+          db,
+          "users",
+          currentUser.uid,
+          "following"
+        )
+      );
+
+
+    return snap.docs.map(
+      item=>item.id
+    );
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+/* =====================================================
+   EXPLORAR
+===================================================== */
+
+async function loadExplore(){
+
+  const container =
+    document.getElementById(
+      "exploreFeed"
+    );
+
+
+  container.innerHTML =
+    `<div class="loading">
+      Buscando publicaciones para ti...
+     </div>`;
+
+
+  try{
+
+    const followingIds =
+      await getFollowingIds();
+
+
+    const excluded =
+      new Set([
+        currentUser.uid,
+        ...followingIds
+      ]);
+
+
+    const snap =
+      await getDocs(
+        collection(
+          db,
+          "posts"
+        )
+      );
+
+
+    const posts = [];
+
+
+    snap.forEach(
+      docSnap=>{
+
+        const post =
+          docSnap.data();
+
+
+        if(
+          !excluded.has(
+            post.uid
+          )
+        ){
+
+          posts.push({
+
+            id:
+              docSnap.id,
+
+            ...post
+
+          });
+
+        }
+
+      }
+    );
+
+
+    posts.sort(
+      (a,b)=>{
+
+        return (
+          (b.createdAt?.seconds || 0) -
+          (a.createdAt?.seconds || 0)
+        );
+
+      }
+    );
+
+
+    if(!posts.length){
+
+      container.innerHTML =
+        `<div class="empty">
+          No hay publicaciones nuevas para explorar.
+         </div>`;
+
+      return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    for(
+      const post
+      of posts.slice(0,30)
+    ){
+
+      const element =
+        await createPostElement(
+          post
+        );
+
+
+      container.appendChild(
+        element
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    container.innerHTML =
+      `<div class="empty">
+        No se pudo cargar Explorar.
+       </div>`;
+
+  }
+
+}
+
+
+/* =====================================================
+   PERFIL PROPIO
+===================================================== */
+
+async function loadProfile(){
+
+  if(!currentUser)
+    return;
+
+
+  try{
+
+    const postsSnap =
+      await getDocs(
+        collection(
+          db,
+          "posts"
+        )
+      );
+
+
+    let myPosts = [];
+
+
+    postsSnap.forEach(
+      docSnap=>{
+
+        const post =
+          docSnap.data();
+
+
+        if(
+          post.uid ===
+          currentUser.uid
+        ){
+
+          myPosts.push({
+
+            id:
+              docSnap.id,
+
+            ...post
+
+          });
+
+        }
+
+      }
+    );
+
+
+    myPosts.sort(
+      (a,b)=>{
+
+        return (
+          (b.createdAt?.seconds || 0) -
+          (a.createdAt?.seconds || 0)
+        );
+
+      }
+    );
+
+
+    document
+      .getElementById(
+        "postsCount"
+      )
+      .textContent =
+      myPosts.length;
+
+
+    const followingSnap =
+      await getDocs(
+        collection(
+          db,
+          "users",
+          currentUser.uid,
+          "following"
+        )
+      );
+
+
+    const followersSnap =
+      await getDocs(
+        collection(
+          db,
+          "users",
+          currentUser.uid,
+          "followers"
+        )
+      );
+
+
+    document
+      .getElementById(
+        "followingCount"
+      )
+      .textContent =
+      followingSnap.size;
+
+
+    document
+      .getElementById(
+        "followersCount"
+      )
+      .textContent =
+      followersSnap.size;
+
+
+    const container =
+      document.getElementById(
+        "myPosts"
+      );
+
+
+    container.innerHTML = "";
+
+
+    if(!myPosts.length){
+
+      container.innerHTML =
+        `<div class="empty">
+          Todavía no tienes publicaciones.
+         </div>`;
+
+      return;
+
+    }
+
+
+    for(
+      const post
+      of myPosts
+    ){
+
+      const element =
+        await createPostElement(
+          post
+        );
+
+
+      container.appendChild(
+        element
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   PERFIL PÚBLICO
+===================================================== */
+
+async function openPublicProfile(
+  uid
+){
+
+  if(!uid)
+    return;
+
+
+  if(
+    uid ===
+    currentUser?.uid
+  ){
+
+    showSection(
+      "profile"
+    );
+
+    return;
+
+  }
+
+
+  currentPublicProfileUid =
+    uid;
+
+
+  const modal =
+    document.getElementById(
+      "publicProfileModal"
+    );
+
+
+  modal
+    .classList
+    .remove("hidden");
+
+
+  const avatar =
+    document.getElementById(
+      "publicProfileAvatar"
+    );
+
+
+  const username =
+    document.getElementById(
+      "publicProfileUsername"
+    );
+
+
+  const bio =
+    document.getElementById(
+      "publicProfileBio"
+    );
+
+
+  const posts =
+    document.getElementById(
+      "publicProfilePosts"
+    );
+
+
+  username.textContent =
+    "Cargando...";
+
+  bio.textContent = "";
+
+  posts.innerHTML =
+    `<div class="loading">
+      Cargando perfil...
+     </div>`;
+
+
+  try{
+
+    const profileSnap =
+      await getDoc(
+        doc(
+          db,
+          "users",
+          uid
+        )
+      );
+
+
+    if(
+      !profileSnap.exists()
+    ){
+
+      username.textContent =
+        "Usuario no encontrado";
+
+      posts.innerHTML =
+        `<div class="empty">
+          Este perfil no existe.
+         </div>`;
+
+      return;
+
+    }
+
+
+    const profile =
+      profileSnap.data();
+
+
+    const userName =
+      profile.username ||
+      "usuario";
+
+
+    avatar.src =
+      profile.photoURL ||
+      defaultAvatar(
+        userName
+      );
+
+
+    username.textContent =
+      userName;
+
+
+    bio.textContent =
+      profile.bio ||
+      "Este usuario todavía no tiene una biografía.";
+
+
+    const followingSnap =
+      await getDocs(
+        collection(
+          db,
+          "users",
+          uid,
+          "following"
+        )
+      );
+
+
+    const followersSnap =
+      await getDocs(
+        collection(
+          db,
+          "users",
+          uid,
+          "followers"
+        )
+      );
+
+
+    document
+      .getElementById(
+        "publicFollowingCount"
+      )
+      .textContent =
+      followingSnap.size;
+
+
+    document
+      .getElementById(
+        "publicFollowersCount"
+      )
+      .textContent =
+      followersSnap.size;
+
+
+    const postsSnap =
+      await getDocs(
+        collection(
+          db,
+          "posts"
+        )
+      );
+
+
+    const userPosts = [];
+
+
+    postsSnap.forEach(
+      docSnap=>{
+
+        const post =
+          docSnap.data();
+
+
+        if(
+          post.uid === uid
+        ){
+
+          userPosts.push({
+
+            id:
+              docSnap.id,
+
+            ...post
+
+          });
+
+        }
+
+      }
+    );
+
+
+    userPosts.sort(
+      (a,b)=>{
+
+        return (
+          (b.createdAt?.seconds || 0) -
+          (a.createdAt?.seconds || 0)
+        );
+
+      }
+    );
+
+
+    document
+      .getElementById(
+        "publicPostsCount"
+      )
+      .textContent =
+      userPosts.length;
+
+
+    const followBtn =
+      document.getElementById(
+        "publicFollowBtn"
+      );
+
+
+    followBtn.disabled =
+      false;
+
+
+    followBtn.textContent =
+      "Seguir";
+
+
+    followBtn.classList.remove(
+      "following"
+    );
+
+
+    const followingRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid,
+        "following",
+        uid
+      );
+
+
+    const isFollowing =
+      await getDoc(
+        followingRef
+      );
+
+
+    if(
+      isFollowing.exists()
+    ){
+
+      followBtn.textContent =
+        "Siguiendo";
+
+      followBtn.classList.add(
+        "following"
+      );
+
+    }
+
+
+    followBtn.onclick =
+      async ()=>{
+
+        followBtn.disabled =
+          true;
+
+
+        try{
+
+          const current =
+            await getDoc(
+              followingRef
+            );
+
+
+          const followerRef =
+            doc(
+              db,
+              "users",
+              uid,
+              "followers",
+              currentUser.uid
+            );
+
+
+          if(
+            current.exists()
+          ){
+
+            await deleteDoc(
+              followingRef
+            );
+
+            await deleteDoc(
+              followerRef
+            );
+
+
+            followBtn.textContent =
+              "Seguir";
+
+            followBtn.classList.remove(
+              "following"
+            );
+
+          }else{
+
+            await setDoc(
+              followingRef,
+              {
+
+                uid:uid,
+
+                createdAt:
+                  serverTimestamp()
+
+              }
+            );
+
+
+            await setDoc(
+              followerRef,
+              {
+
+                uid:
+                  currentUser.uid,
+
+                createdAt:
+                  serverTimestamp()
+
+              }
+            );
+
+
+            followBtn.textContent =
+              "Siguiendo";
+
+            followBtn.classList.add(
+              "following"
+            );
+
+          }
+
+
+          const updatedFollowers =
+            await getDocs(
+              collection(
+                db,
+                "users",
+                uid,
+                "followers"
+              )
+            );
+
+
+          document
+            .getElementById(
+              "publicFollowersCount"
+            )
+            .textContent =
+            updatedFollowers.size;
+
+        }catch(error){
+
+          console.error(
+            error
+          );
+
+          alert(
+            "No se pudo actualizar el seguimiento."
+          );
+
+        }finally{
+
+          followBtn.disabled =
+            false;
+
+        }
+
+      };
+
+
+    posts.innerHTML = "";
+
+
+    if(!userPosts.length){
+
+      posts.innerHTML =
+        `<div class="empty">
+          Este usuario todavía no tiene publicaciones.
+         </div>`;
+
+      return;
+
+    }
+
+
+    for(
+      const post
+      of userPosts
+    ){
+
+      const element =
+        await createPostElement(
+          post
+        );
+
+
+      posts.appendChild(
+        element
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    username.textContent =
+      "No se pudo cargar";
+
+    posts.innerHTML =
+      `<div class="empty">
+        No se pudo cargar este perfil.
+       </div>`;
+
+  }
+
+}
+
+
+document
+  .getElementById(
+    "closePublicProfile"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+      document
+        .getElementById(
+          "publicProfileModal"
+        )
+        .classList
+        .add("hidden");
+    }
+  );
+
+
+document
+  .getElementById(
+    "publicProfileModal"
+  )
+  .addEventListener(
+    "click",
+    event=>{
+
+      if(
+        event.target.id ===
+        "publicProfileModal"
+      ){
+
+        event.target
+          .classList
+          .add("hidden");
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   CAMBIAR FOTO DE PERFIL
+===================================================== */
+
+document
+  .getElementById(
+    "profilePhotoInput"
+  )
+  .addEventListener(
+    "change",
+    async function(){
+
+      const file =
+        this.files[0];
+
+
+      if(!file)
+        return;
+
+
+      document
+        .getElementById(
+          "profileFileName"
+        )
+        .textContent =
+        "Subiendo foto...";
+
+
+      try{
+
+        const result =
+          await uploadToCloudinary(
+            file
+          );
+
+
+        const url =
+          result.secure_url;
+
+
+        await setDoc(
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          ),
+          {
+
+            photoURL:url
+
+          },
+          {
+            merge:true
+          }
+        );
+
+
+        currentProfile.photoURL =
+          url;
+
+
+        updateProfileUI();
+
+
+        document
+          .getElementById(
+            "profileFileName"
+          )
+          .textContent =
+          "Foto actualizada.";
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        document
+          .getElementById(
+            "profileFileName"
+          )
+          .textContent =
+          "No se pudo subir la foto.";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   GUARDAR PERFIL
+===================================================== */
+
+document
+  .getElementById(
+    "saveProfileBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const username =
+        document
+          .getElementById(
+            "editUsername"
+          )
+          .value
+          .trim();
+
+
+      const bio =
+        document
+          .getElementById(
+            "editBio"
+          )
+          .value
+          .trim();
+
+
+      if(!username){
+
+        alert(
+          "El nombre de usuario no puede estar vacío."
+        );
+
+        return;
+
+      }
+
+
+      const button =
+        document.getElementById(
+          "saveProfileBtn"
+        );
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "Guardando...";
+
+
+      try{
+
+        await setDoc(
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          ),
+          {
+
+            username:username,
+
+            usernameLower:
+              username.toLowerCase(),
+
+            bio:bio
+
+          },
+          {
+            merge:true
+          }
+        );
+
+
+        currentProfile.username =
+          username;
+
+        currentProfile.bio =
+          bio;
+
+
+        updateProfileUI();
+
+
+        alert(
+          "Perfil actualizado."
+        );
+
+      }catch(error){
+
+        console.error(
+          error
+        );
+
+        alert(
+          "No se pudo guardar el perfil."
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+          "Guardar perfil";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   CERRAR SESIÓN
+===================================================== */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      await signOut(
+        auth
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function escapeHTML(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+function escapeAttr(
+  value
+){
+
+  return escapeHTML(
+    value
+  );
+
+}
+
+
+function formatDate(
+  timestamp
+){
+
+  if(!timestamp){
+
+    return "Ahora";
+
+  }
+
+
+  try{
+
+    const date =
+      new Date(
+        timestamp.seconds *
+        1000
+      );
+
+
+    return date.toLocaleString(
+      "es",
+      {
+        day:"2-digit",
+        month:"short",
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
+
+  }catch{
+
+    return "Ahora";
+
+  }
+
+}
+
+
+function debounce(
+  fn,
+  delay
+){
+
+  let timer;
+
+
+  return (...args)=>{
+
+    clearTimeout(
+      timer
+    );
+
+
+    timer =
+      setTimeout(
+        ()=>fn(...args),
+        delay
+      );
+
+  };
+
+}
+
+</script>
+
+</body>
+</html>
